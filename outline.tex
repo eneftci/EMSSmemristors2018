@@ -1,0 +1,97 @@
+\documentclass[english]{article}
+\usepackage[margin=1.0in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{amssymb}
+\usepackage{babel}
+\usepackage{acronym}
+\usepackage{units}
+\usepackage{natbib}
+\usepackage{url}
+
+\captionsetup[subfloat]{labelformat=parens,labelsep=space,listofformat=subparens}
+\setcounter{lofdepth}{2}
+
+\newcommand{\refeq}[1]{{Eq.~(\ref{#1})}}
+\newcommand{\refeqs}[1]{{Eqs.~(\ref{#1})}}
+\newcommand{\reffig}[1]{{Fig.~\ref{#1}}}
+\newcommand{\reffigs}[1]{{Figs.~\ref{#1}}}
+\newcommand{\refsec}[1]{{Sec.~\ref{#1}}}
+
+\renewcommand{\cite}{\citep}
+
+\makeatother
+\begin{document}
+
+\input{acronyms}
+
+\title{Memristive devices for brain-inspired computing\\ Recent theoretical developments and applications of learning with spiking neural networks}
+\author{M. Fouda, F. Kurdahi, A. Eltawil, E. Neftci}
+\maketitle
+
+\begin{abstract}
+%Neuromorphic engineering - spiking neural networks.
+On metrics of density and power, neuromorphic technologies emulating spiking neural networks have the capability to surpass main-stream computing technologies in tasks where real-time adaptability and autonomy are essential.
+%Memristor as a good candidate for solving current challenges in spiking neural networks and learning
+This capability hinges upon successful theoretical advances and the engineering of embedded, high density memory.
+%Improving applicability of memristors by matching neural and synaptic dynamics
+While algorithmic advances are on track, the potential of memristors to improve neuromorphic computing did not yet bear fruit, primarily because they are often thought of as drop-in replacement of conventional memory.
+In this article, we review neuromorphic learning machines from the perspective of emerging memory technologies, describe their mathematical modeling and, propose a neuron-- synaptic plasticity model matching to improve the co-design of the hardware and the algorithm.
+Our findings suggest that multifactor learning rules derived from computational modeling can vastly improve the performance of memristors in hardware.
+\end{abstract}
+
+\section{Introduction}
+\begin{itemize}
+  \item List challenges of computing with a neural substrate: local information, limited computational elements, limited precision. Non von Neumann architectures. Discuss approaches to map computational models to SNN \cite{Neftci18_datapowe}.  
+  \item Highlight recent trends in top-down neuromorphic engineering (hardware algorithm co-design). Overview strong similarities with respect to deep learning \cite{Neftci18_datapowe}. 
+  \item Explanation of Learning Machine vs. Machine learning. Neuromorphic Learning Machines and their domains of application. 
+  \item Review recent work in dedicated artificial neural network hardware, neuromorphic hardware. \emph{e.g.} \cite{Jouppi_etal17_in-dperf}. Interest from the field of devices.
+\end{itemize}
+
+\section{The Role and Challenges of Memristors for Neuromorphic Hardware}
+\begin{itemize}
+  \item Overview of the mathematical modeling of memristors \cite{Radwan_Fouda16_mathmode} and crossbar arrays \cite{Fouda_etal18_modeanal}.
+  \item Review recent progress in memristors \emph{e.g.} \cite{Kim_etal17_remoepit} and efforts in utilizing them, \emph{e.g.} \cite{Chen_etal15_mitieffe}. Can memristor technologies solve challenges in embedded learning?
+  \item Neuromorphic learning machines are ideal for robustly utilizing memristor technologies \cite{Neftci18_datapowe}, \emph{e.g.} learning for robustness to device imperfection/drift \cite{Serb_etal16_unsulear}, \cite{Querlioz_etal15_bioiprog}.   
+\end{itemize}
+
+\section{Learning in Spiking Neural Networks}
+\begin{itemize}
+  \item Synaptic plasticity, focused overview
+  \item Review memristors used in the context of spiking neural networks \cite{Bill_Legenstein14_compmemr,Mostafa_etal15_implspik,Querlioz_etal15_bioiprog}
+  \item Stochasticity as a resource to enrich neural dynamics with simple computational elements, and improve learning
+  \item Overview Sources of stochasticity in neurobiology. Stochasticity as a strategy for information theoretic optimality at fixed metabolic cost \cite{Harris_etal12_synaener}. Neural and Synaptic Sampling \cite{Fiser_etal10_statopti}
+  \item Overview sources of stochasticity in memristors. Multiplicative vs. Additive Stochasticity.
+  \item Dropout and Dropconnect as a resource for approximate Bayesian inference \cite{Neftci17_stocsyna,Gal_Ghahramani15_dropas}. Batch normalization for free \cite{Neftci17_stocsyna}.
+\end{itemize}
+
+\section{Cross-fertilizing Neuroscience and Memristor Research}
+\begin{itemize}
+  \item Matching neural and synaptic dynamics \cite{Neftci18_datapowe}
+  \item Unsupervised learning: ICA \cite{Fouda_etal18_indecomp}, Supervised learning: random backprop \cite{Neftci_etal17_evenrand}
+  \item Looking forward: Multifactor Learning Rules for Memristors. 
+\end{itemize}
+
+\bibliographystyle{plainnat_lastname} 
+\bibliography{biblio}
+
+%A possible strategy to compute on resource-constrained platforms is to be robust to uncertainty, or even embrace it. Interestingly, the stochastic nature of neurons and synapses is argued to be consistent with optimal information transfer while minimizing metabolic cost \cite{Harris_etal12_synaener}.
+%%Behiavoral experiments suggest that higher organisms use model-free and model-based reinforcement learning to trade-off performance and efficiency \cite{Daw_etal05_uncecomp}: 
+%%Model-free learning enables more efficient learning compared to model-based learning, and animals can use the latter for fast and efficient planning, whereas model-based learning subserves slow but potentially more accurate mental planning. 
+%While information-theoretic optimality of neural communication does not necessarily imply computational efficiency, studies point out that stochastic computational elements are beneficial for learning \cite{Maass14_noisas}. 
+%The family of stochastic neural network models called Dropout or Dropconnect \cite{Hinton_etal12_imprneur,Wan_etal13_reguneur} inspired by the probabilistic nature of neural activation and synaptic quantal release is one such example. 
+%Stochasticity there greatly improved learning and inference in a number of artificial neural networks and spiking neural networks.
+%Theoretical studies showed that Dropout and DropConnect play the dual role of a regularizer during learning \cite{Baldi_Sadowski13_undedrop}; and that, more generally, multiplicative noise is consistent with stochasticity observed in biological neural networks \cite{Moreno-Bote14_poisspik}.
+%%Stochasticity at the level of the synapse provides a natural and energy-efficient mechanism for stochastic information processing and learning in neural circuits \citep{Calvin_Stevens67,Levy_Baxter02,Neftci_etal15,Moreno-Bote14}. 
+%The benefits of multiplicative stochasticity were extensively studied in spiking neural networks \cite{Neftci_etal16_stocsyna,Neftci_etal17_evenrand,Muller_Indiveri16_neursamp}.
+%There, in addition to improving learning performance, stochasticity conferred an additional advantage of decorrelating spiking activity, which better conditioned synaptic plasticity rules and neural dynamics.
+%In addition, independent multiplicative noise induces a self-normalizing behavior in the neuron \cite{Neftci17_stocsyna} in a way that can be related to batch normalization \cite{Salimans_Kingma16_weignorm}, a technique ubiquitous in modern deep neural networks.
+%Stochastic neural networks can be articulated as a Monte Carlo integration over an equivalent Gaussian process posterior approximation \cite{Fiser_etal10_statopti} which can outperform standard MCMC samplers by having comparatively higher mixing rates \cite{Jonke_etal14_theobasi,Petrovici_etal13_stocinfe}, leading to faster convergence in learning \cite{Neftci_etal14_evencont}.
+%
+
+
+\end{document}
