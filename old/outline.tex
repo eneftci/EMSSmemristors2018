@@ -13,10 +13,12 @@
 \usepackage{natbib}
 \usepackage{url}
 
+
+
 \captionsetup[subfloat]{labelformat=parens,labelsep=space,listofformat=subparens}
 \setcounter{lofdepth}{2}
 
-\newcommand{\refeq}[1]{{Eq.~(\ref{#1})}}
+\newcommand{\refeq}[1]{{Eq.~(\ref{#2})}}
 \newcommand{\refeqs}[1]{{Eqs.~(\ref{#1})}}
 \newcommand{\reffig}[1]{{Fig.~\ref{#1}}}
 \newcommand{\reffigs}[1]{{Figs.~\ref{#1}}}
@@ -24,25 +26,32 @@
 
 \renewcommand{\cite}{\citep}
 
+\usepackage{todonotes}
+
 \makeatother
 \begin{document}
 
 \input{acronyms}
 
-\title{Recent theoretical developments and applications of learning with spiking neural networks}
+\title{Recent theoretical developments and applications of learning with Memristor-based spiking neural networks}
 \author{M. Fouda, F. Kurdahi, A. Eltawil, E. Neftci}
 \maketitle
 
 \begin{abstract}
-%Neuromorphic engineering - spiking neural networks.
-On metrics of density and power, neuromorphic technologies emulating spiking neural networks have the capability to surpass main-stream computing technologies in tasks where real-time adaptability and autonomy are essential.
-%Memristor as a good candidate for solving current challenges in spiking neural networks and learning
-This capability hinges upon successful theoretical advances and the engineering of embedded, high density memory.
+%%Neuromorphic engineering - spiking neural networks.
+%On metrics of density and power, neuromorphic technologies emulating spiking neural networks have the capability to surpass main-stream computing technologies in tasks where real-time adaptability and autonomy are essential.
+%%Memristor as a good candidate for solving current challenges in spiking neural networks and learning
+%This capability hinges upon successful theoretical advances and the engineering of embedded, high density memory.
 %Improving applicability of memristors by matching neural and synaptic dynamics
-While algorithmic advances have been successful, the potential of memristors to improve neuromorphic computing did not yet bear fruit, primarily because they often used as drop-in replacement to conventional memory.
-However, interdisciplinary approaches anchored in machine learning theory suggest that modifications to the neuron model can take better advantage of the memristor dynamics.
-More specifically, this article reviews learning in neuromorphic hardware from the perspective of emerging memory technologies, describes techniques for mathematical modeling of memristors, and proposes neuron-- synaptic plasticity model matching as a means to improve the compatibility between the neuron and the synapse model.
-Our findings suggest that neuroscience-inspired multifactor learning rules rigorously derived from computational models can vastly improve the performance of memristors in hardware.
+%While algorithmic advances have been successful, the potential of memristors to improve neuromorphic computing did not yet bear fruit, primarily because they often used as drop-in replacement to conventional memory.
+%However, interdisciplinary approaches anchored in machine learning theory suggest that modifications to the neuron model can take better advantage of the memristor dynamics.
+%More specifically, this article reviews learning in neuromorphic hardware from the perspective of emerging memory technologies, describes techniques for mathematical modeling of memristors, and 
+%proposes neuron-- synaptic plasticity model matching as a means to improve the compatibility between the neuron and the synapse model.
+%Our findings suggest that neuroscience-inspired multifactor learning rules rigorously derived from computational models can vastly improve the performance of memristors in hardware.
+%\todo[inline]{ I think the abstract should be directed towards the importance of the Memristor-based SNNs and we shouldn't propose new ideas, Please check the following abstract.}
+
+On metrics of density and power efficiency, neuromorphic technologies, emulating brain-inspired spiking neural networks, should have the capability to surpass main-stream computing technologies in tasks where real-time functionality, adaptability and autonomy are essential. This capability hinges upon successful theoretical advances and the engineering of embedded, high density memory devices such as the memristors (RRAMs) due to small fingerprint, full precision, power efficiency, long retention and good endurance. While algorithmic advances have been successful, the potential of memristors to improve neuromorphic computing did not yet bear fruit, primarily because they often used as drop-in replacement to conventional memory. However, interdisciplinary approaches anchored in machine learning theory suggest that modifications to the neuron model can take better advantage of the memristor dynamics. More specifically, this chapter reviews the recent development of memristor based hardware realization of spiking neural networks in addition to the developed learning algorithms. The stochasticity of the memristor can enable efficient and robust learning. Finally, we give directions and perspectives of memristor-based SNNs.              
+
 \end{abstract}
 
 \section{Introduction}
@@ -56,17 +65,21 @@ Our findings suggest that neuroscience-inspired multifactor learning rules rigor
 \section{The Role and Challenges of Memristors for Neuromorphic Hardware}
 \begin{itemize}
   \item Overview of the mathematical modeling of memristors \cite{Radwan_Fouda16_mathmode} and crossbar arrays \cite{Fouda_etal18_modeanal}.
+  \item Memristor based synapse and neuronal activity realizations \cite{nair2017differential,hu2017compact,wu2015cmos,mostafa2016beyond,liu2017memristor,lin2017capacitor}
   \item Review recent progress in memristors \emph{e.g.} \cite{Kim_etal17_remoepit} and efforts in utilizing them, \emph{e.g.} \cite{Chen_etal15_mitieffe}. Can memristor technologies solve challenges in embedded learning?
   \item Neuromorphic learning machines are ideal for robustly utilizing memristor technologies \cite{Neftci18_datapowe}, \emph{e.g.} learning for robustness to device imperfection/drift \cite{Serb_etal16_unsulear}, \cite{Querlioz_etal15_bioiprog}.   
 \end{itemize}
 
-\section{Learning in Spiking Neural Networks}
+\section{Learning in Memristor based Spiking Neural Networks}
 \begin{itemize}
-  \item Synaptic plasticity, focused overview
-  \item Review memristors used in the context of spiking neural networks \cite{Bill_Legenstein14_compmemr,Mostafa_etal15_implspik,Querlioz_etal15_bioiprog}
-  \item Stochasticity as a resource to enrich neural dynamics with simple computational elements, and improve learning
+  \item Synaptic plasticity, focused overview with experiments verification  \cite{serrano2013stdp,saighi2015plasticity,prezioso2016self,prezioso2016spiking,pedretti2017memristive}
+  \item Review memristor devices used in the context of spiking neural networks  \cite{Bill_Legenstein14_compmemr,Mostafa_etal15_implspik,Querlioz_etal15_bioiprog}
+  \item Memristor as Spatio-Temporal dynamic synapse to build synaptic functions for spike timing neural network. \cite{hu2017compact} 
+  \item learning using Modulation of Weight-Dependent STDP \cite{zheng2018learning}
+ \item Dendritic-based learning \cite{wu2018dendritic}
+  \item Stochasticity as a resource to enrich neural dynamics with simple computational elements, and improve learning \cite{naous2016memristor,ly2018role}
   \item Overview Sources of stochasticity in neurobiology. Stochasticity as a strategy for information theoretic optimality at fixed metabolic cost \cite{Harris_etal12_synaener}. Neural and Synaptic Sampling \cite{Fiser_etal10_statopti}
-  \item Overview sources of stochasticity in memristors. Multiplicative vs. Additive Stochasticity.
+  \item Overview sources of stochasticity in memristors. Multiplicative vs. Additive Stochasticity \cite{al2015memristors,ly2018role}.
   \item Dropout and Dropconnect as a resource for approximate Bayesian inference \cite{Neftci17_stocsyna,Gal_Ghahramani15_dropas}. Batch normalization for free \cite{Neftci17_stocsyna}.
 \end{itemize}
 
@@ -77,8 +90,14 @@ Our findings suggest that neuroscience-inspired multifactor learning rules rigor
   \item Looking forward: Multifactor Learning Rules for Memristors. 
 \end{itemize}
 
+\section{Applications of Memristor based SNNs}
+\begin{itemize}
+  \item Building spike sorting module for Brain Machine Interfaces (BMIs) \cite{mukhopadhyay2018power}.
+  \item Position detection \cite{ebong2012cmos}
+\end{itemize}
+
 \bibliographystyle{plainnat} 
-\bibliography{biblio}
+\bibliography{biblio_unique_alt}
 
 %A possible strategy to compute on resource-constrained platforms is to be robust to uncertainty, or even embrace it. Interestingly, the stochastic nature of neurons and synapses is argued to be consistent with optimal information transfer while minimizing metabolic cost \cite{Harris_etal12_synaener}.
 %%Behiavoral experiments suggest that higher organisms use model-free and model-based reinforcement learning to trade-off performance and efficiency \cite{Daw_etal05_uncecomp}: 
