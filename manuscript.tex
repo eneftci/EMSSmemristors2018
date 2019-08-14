@@ -61,7 +61,7 @@ On metrics of density and power efficiency, neuromorphic technologies have the p
 However, interdisciplinary approaches anchored in machine learning theory suggest that multifactor plasticity rules matching neural and synaptic dynamics to the device capabilities can take better advantage of memristor dynamics and its stochasticity. Furthermore, such plasticity rules generally show much higher performance than that of classical \ac{STDP} rules. This chapter reviews the recent development in learning with spiking neural network models and their possible implementation with memristor-based hardware.
 \end{abstract}
 
-\textit{\textbf{Keywords:}} Deep Learning, Nonindealities, In-memory computing, Three-Factor Rules. 
+\textit{\textbf{Keywords:}} Brain-inspired Computing, In-memory computing, Deep Learning, Memristors, Nonindealities, Three-Factor Rules. 
 
 
 
@@ -106,11 +106,14 @@ Synaptic circuits which reproduce the dynamics of $I$ can be implemented in anal
 
 To make the mathematical analysis and digital implementations more intuitive, it is useful to write \ac{LIF} in discrete form:
 \begin{align*}
-    U_i[n+1] & = \beta U_i[n] + I_i[n] - S_i[n]\\
+    U_i[n+1] & = \beta U_i[n] + U_{rest} + I_i[n] - S_i[n] (U_i[n] - U_{rest})\\
     I_i[n+1] & = \alpha I_i[n] + \sum_j W_{ij} S_j[n]\\
-    S_i[n] &= \Theta(U_i[n])
+    S_i[n] &= \Theta(U_i[n])=\left\{ \begin{array}{cc}
+ 1 & \;U_i[n]\geq V_{th} \\
+ 0 & \;Otherwise
+ \end{array}\right. 
 \end{align*}
-where $\alpha=\exp(-\frac{\Delta t}{\tau_{\mathrm{mem}}})$, $\beta=\exp(-\frac{\Delta t}{\tau_{\mathrm{syn}}})$ are constants that capture the decay dynamics of states $U$ and $I$ during a $\Delta t$ timestep and $\Theta$ is the step function.
+where $\alpha=\exp(-\frac{\Delta t}{\tau_{\mathrm{mem}}})$, $\beta=\exp(-\frac{\Delta t}{\tau_{\mathrm{syn}}})$ are constants that capture the decay dynamics of states $U$ and $I$ during a $\Delta t$ timestep, $\Theta$ is the step function and $V_{th}$ is the firing threshold.
 \begin{figure}
 \centering
 \vspace{-0.15in}
@@ -119,11 +122,12 @@ where $\alpha=\exp(-\frac{\Delta t}{\tau_{\mathrm{mem}}})$, $\beta=\exp(-\frac{\
 \hfil
 \subfloat[]{\includegraphics[width=0.45\linewidth]{LIF_Circuit2.pdf}%
 \label{fig:lif_circuit}}
-  \caption{a)Example \acl{LIF} Neuron dynamics for $U_{rest}=0$ nd $\theta=1$ and b) basic neuron circuit implementing \ac{LIF} dynamics. }
+  \caption{a)Example \acl{LIF} Neuron dynamics for $U_{rest}=0$ and $V_{th}=1$ and b) basic neuron circuit implementing \ac{LIF} dynamics. }
 \label{SP}
 \vspace{-0.05in}
 \end{figure}
-%
+
+
 Several digital implementations of spiking neural networks use these update equations \cite{Detorakis_etal18_neursyna,Davies_etal18_loihneur}.
 %
 % \begin{figure}
@@ -154,6 +158,9 @@ Neural networks with binary neural activations and/or weights were proposed as e
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% 
 \section{ Memristive Realization and Non-idealities}
+
+\textcolor{red}{In order to implement a neuromorphic hardware, it is needed to have a device or a circuit that mimic the synapse behavior, basically a memory device to store the synaptic weight. Memristive devices can be used to realize the synapses. A device is referred to as a memristive device if it exhibits pinched hysteresis behavior in current-voltage plane which indicates a memory behavior in its resistance. %In addition, It is called a memrsitor if two other conditions are satisfied; (1) the pinched hysteresis shrinks with increasing the applied frequency, and (2) the memory behaviour vanishes when the frequency tends to infinity \cite{adhikari2013three,radwan2015mathematical}. 
+Many physical devices exhibits memristive behaviors such as Phase Change Memory (PCM), ferroelectric RAM (FeRAM), spin transfer torque magnetic RAM (STT-MRAM), and resistive RAM (RRAM or ReRAM). Each device has different switching mechanism and dynamics. RRAMs have a promising potential for neuromorphic applications due to high area density, stackability, and low write energy, compared to the other emerging devices \cite{wilson2013international}. Thus, in this section, we focus on RRAM, without loss of generality, to discuss the physical limitations and problems facing deploying such technology for neuromorphic hardware.}
 
 \begin{figure}[!h]
 \centering
@@ -242,7 +249,7 @@ An attractive purpose of RRAMs is to accelerate inference and training.
 However, endurance is a critical obstacle to RRAM deployment in neuromorphic hardware. 
 In online learning, the devices are frequently updated, and especially so during gradient-based learning such as in artificial neural networks.
 However, each device has a limited number of potentiation and depression cycles \cite{zhao2018characterizing,chen2011physical}. 
-The endurance depends on the device's switching and electrode materials. For example $\mathrm{HfO_x}$ devices can achieve endurance up to $10^{10}$ cycles, but $Al_2O_3$ devices achieve endurance up to $10^4$ \cite{nail2016understanding}.  
+The endurance depends on the device's switching and electrode materials. For example $\mathrm{HfO_x}$ devices can achieve endurance up to $10^{10}$ cycles, but $\mathrm{Al_2O_3}$ devices achieve endurance up to $10^4$ \cite{nail2016understanding}.  
 With limited endurance, it is necessary to complete the training before the devices degrade.
 The endurance requirement for learning is application-dependent. 
 In standard deep learning, weight updates are usually performed every batch. 
@@ -256,7 +263,7 @@ There are some solutions to mitigate the endurance problem in machine learning s
   \item Full offline training: training is completed off the device and the final weights are transferred to the RRAM-based hardware. This requires an accurate model of the devices, the crossbar array and the sensing circuitry in the training procedure, and to verify the response of each part of the network to make sure that the response matches the simulated one \cite{jain2018rx}.  
   \item Semi-online training: A complete training cycle is performed offline, then the new weights are transferred to the devices. Then, online retraining is performed to improve the performance due to the existing impairments. Due to the smaller number of writing cycles, this solution would relax the endurance requirements. In \cite{fouda2018overcoming}, it was noticed that the network was able to recover the original accuracy after $10\sim20\%$ of the training epochs. 
 \end{itemize}
-\marginpar{Discuss why not PCMs: PCMs are too asymmetric and high power for on-line learning. that is the case where endurance becomes an issue}
+%\marginpar{Discuss why not PCMs: PCMs are too asymmetric and high power for on-line learning. that is the case where endurance becomes an issue}
 %
 Once the online or the offline training is performed, the network can operate in the inference mode where only reading cycles are performed. In this case, the retention of the stored values becomes an important issue. As with endurance, RRAM retention is also dependent on the device materials and temperature. 
 For example the $\mathrm{HfO_x}$ devices have around $10^4$ seconds (2.78 hours) retention \cite{azzaz2016endurance}. 
@@ -297,11 +304,11 @@ But, in neuromorphic applications, this adds an exponential behavior to vector-m
 \begin{equation}
     S_j=\sum_{i=1}^m G_{ij} \sinh(a V_i). 
 \end{equation}
-\noindent This exponential non-linearity makes the VMM operation inaccurate which deteriorates the training performance \cite{kim2018deep}. Some algorithms were developed to take the affect of the device's voltage-dependency into consideration while training non-spiking neural networks such as \cite{kim2018deep}. The same algorithm idea can be extended to the spiking neural networks.         
+\noindent This exponential non-linearity makes the VMM operation inaccurate which deteriorates the training performance \cite{kim2018deep}. Some algorithms were developed to take the affect of the device's voltage-dependency into consideration while training non-spiking neural networks such as \cite{kim2018deep}. The same algorithm idea can be extended to spiking neural networks.         
 
 
 
-\subsubsection{Partitioning of Large Layer Matrices}
+\paragraph{Partitioning of Large Layer Matrices}
 The sneak path problem prohibits the implementation of large matrices using a single large crossbar array. One possible solution is to partition the large layer matrices into small matrices that can be implemented using realizable crossbar arrays. Figure \ref{fig:partioning} shows the partitioned crossbar arrays and the interconnect fabric between them to realize the complete VMMs where the large crossbar array, having $N\times M$ RRAMs, is partitioned into $n\times m$ crossbar arrays.
 In order to have the same structure of a large crossbar array, vertical and horizontal interconnects are placed under the crossbar arrays. This horizontal interconnect is used to connect the inputs between the crossbar arrays within the same array rows. The vertical interconnect is used to connect the outputs of the vertical crossbar arrays. The vertical interconnects are grounded through the sensing circuit to absorb the currents within the same vertical wire. The sensed currents are connected then to the neuronal activity. It is worth highlighting that each crossbar array may require input drivers (buffers) to reduce the loading effect of the vertical interconnect and crossbar arrays. These buffers are not shown in \reffig{fig:partioning} for clarity.  Moreover, they can be placed under the crossbar arrays to save the wafer area where the crossbar arrays are usually fabricated between higher metal layers.   %
 \begin{figure}[!h]
@@ -310,7 +317,6 @@ In order to have the same structure of a large crossbar array, vertical and hori
 \caption{Realization of the partitioned matrices. 
 \label{fig:partioning}
   }
-\vspace{-0.2in}
 \end{figure}   
 %
 \reffig{SP_3D_64} shows the measured random synaptic weights with the same aforementioned parameters after partitioning the $512\times 512$ crossbar arrays into 64 of $64\times 64$ crossbar arrays. The weight variations due to their locations in the crossbar array became much smaller as shown in \reffig{SP_64} and can be considered be modelled with the device variation.  
@@ -375,7 +381,7 @@ ANL=1-\frac{\beta_P e^{-0.5\alpha_P N}+\beta_D e^{-0.5\alpha_D N}}{\Delta G}.
 \end{equation}
 
 \subsubsection{Asymmetric Non-linearity Behavior Example}
-An example of a synaptic device is a non-filamentary (oxide switching) $TiO_x$ based RRAM with a precision measured to 6 bits \cite{park2016tio}. The $Mo/TiO_x/TiN$ device was fabricated based on a redox reaction at $Mo/Tio_x$ interface which forms conducting $MoO_x$.
+An example of a synaptic device is a non-filamentary (oxide switching) ${TiO_x}$ based RRAM with a precision measured to 6 bits \cite{park2016tio}. The ${Mo/TiO_x/TiN}$ device was fabricated based on a redox reaction at ${Mo/Tio_x}$ interface which forms conducting ${MoO_x}$.
 This type of interface based switching devices exhibits good switching variability across the entire wafer and guarantees reproducibility \cite{park2016tio}.
 The asymmetric nonlinear behavior of this device is shown in Fig. \ref{ConductanceVsPulses}. 
 
@@ -427,7 +433,7 @@ Practically, $V_p=\pm 3V$ cases would be considered since it has the widest swit
 \subfloat[]{\includegraphics[width=0.51\linewidth,,height=0.4\linewidth]{LTD}%
 \label{FigLTD}}
 \vspace{-0.05in}
-\caption{RRAM's conductance update (a) long term potentiation  (b) long term depression.}
+\caption{RRAM's conductance update (a) long term potentiation  (b) long term depression. Reproduced from \cite{fouda2018independent}.}
 \label{FigCond}
 \vspace{-0.05in}
 \end{figure}
@@ -453,7 +459,7 @@ Since the sum of two Gaussian random variables is a Gaussian random variable, th
 \subfloat[]{\includegraphics[width=0.51\linewidth,,height=0.4\linewidth]{ConductanceVsPulses_Variability2}%
 \label{ConductanceVsPulses_Variability}}
 \vspace{-0.05in}
-\caption{Non-idealities of the RRAM:(a) asymmetric nonlinear weight update (b) device Variations}
+\caption{Non-idealities of the RRAM:(a) asymmetric nonlinear weight update (b) device Variations. Reproduced from \cite{fouda2018independent}.}
 \label{ConductanceVsPulsesFigure}
 \vspace{-0.05in}
 \end{figure}
@@ -582,7 +588,8 @@ ERBP solves the non-locality problems, leading to remarkably good performance on
     Neurons in the network indicated by black circles were implemented as two-compartment \ac{LIF} neurons.
     The top-layer errors are proportional to the difference between labels (L) and predictions (P), and is implemented using a pair of neurons coding for positive error (blue) and negative error (red).
     Each hidden neuron receives inputs from a random combination of the pair of error neurons.
-    Output neurons receive inputs from the pair of error neurons in a one-to-one fashion.}
+    Output neurons receive inputs from the pair of error neurons in a one-to-one fashion.
+    Reproduced from \cite{Neftci_etal17_evenrand}}.
 \end{figure*}
 
 One limitation \ac{eRBP} is related to the ``loop duration'', \emph{i.e.} the duration necessary from the input onset to a stable response in the error neurons. 
@@ -613,9 +620,9 @@ Intstead, relying on an initialization of the local random classifier weights an
 Using layerwise local classifiers \cite{Mostafa_etal17_deepsupe}, the gradients are computed locally using pseudo-targets (for classification, the labels themselves). 
 To take the temporal dynamics of the neurons into account, the learning rule is similar to SuperSpike \cite{Zenke_Ganguli17_supesupe}. However, the gradients are computed locally through a fixed random projection of the network activities into a local classifier. 
 Learning is achieved using a local rate-based cost function reminiscent of readout neurons in liquid state machines \cite{Maass_etal02_realcomp}, but where the readout is performed over a fixed random combination of the neuron outputs.
-The rate based readout does not have a temporal convolution term in the cost function, the absence of which enables linear scaling, and does not prevent learning precise temporal spike trains (\reffig{fig:dcll_illustration}). The resulting learning dynamics are called Deep Continuous Local Learning (DCLL), and written:
+The rate based readout does not have a temporal convolution term in the cost function, the absence of which enables linear scaling, and does not prevent learning precise temporal spike trains (\reffig{fig:dcll_illustration}). The resulting learning dynamics are called DEep COntinuous Local LEarning (DECOLLE), and written:
 \begin{align}\label{eq:dcll_rule}
-  \Delta W_{ij}^{DCLL} \propto  (\sum_k g_{ik} Error_k) \rho'(U_i) (\epsilon_{post} \ast S_j)).
+  \Delta W_{ij}^{DECOLLE} \propto  (\sum_k g_{ik} Error_k) \rho'(U_i) (\epsilon_{post} \ast S_j)).
 \end{align}
 While SuperSpike scales at least quadratically with the number of neurons, learning with local errors scales linearly \cite{Kaiser_etal18_synaplas}. 
 Linearity greatly improves the memory and computational cost of computing the weight updates, and makes potential RRAM implementations much more straightforward (see \refsec{sec:3f_rram}).
@@ -626,8 +633,8 @@ Linearity greatly improves the memory and computational cost of computing the we
   \hspace{.05\textwidth}
   \includegraphics[height=.32\textheight]{img/snapshot}
 \end{center}
-  \caption{\label{fig:dcll_illustration}\emph{Deep Continuous Local Learning (DCLL)}. (Left) Each layer consists of spiking neurons with continuous dynamics. Each layer feeds into a local classifier through fixed, random connections (diamond-shaped, $y$). The classifier is trained to produce auxiliary targets $\hat{y}$. Errors in the local classifiers are propagated through the random connections to train weights coming in to the spiking layer, but no further (curvy, dashed line). To simplify the learning rule and enable linear scaling of the computations, the cost function is formulated using a rate code. The state of the spiking neurons (membrane potential, synaptic states, refractory state) are carried forward in time. Consequently, even in the absence of recurrent connections, the neurons are stateful in the sense of recurrent neural networks.
-  (Right) Snapshot of the neural states illustrating the DCLL learning rule in the top layer. In this example, the network is trained to produce three time-varying pseudotargets $\hat{y}_1$, $\hat{y}_2$ and $\hat{y}_3$.}
+  \caption{\label{fig:dcll_illustration}\emph{Deep Continuous Local Learning (DECOLLE)}. (Left) Each layer consists of spiking neurons with continuous dynamics. Each layer feeds into a local classifier through fixed, random connections (diamond-shaped, $y$). The classifier is trained to produce auxiliary targets $\hat{y}$. Errors in the local classifiers are propagated through the random connections to train weights coming in to the spiking layer, but no further (curvy, dashed line). To simplify the learning rule and enable linear scaling of the computations, the cost function is formulated using a rate code. The state of the spiking neurons (membrane potential, synaptic states, refractory state) are carried forward in time. Consequently, even in the absence of recurrent connections, the neurons are stateful in the sense of recurrent neural networks.
+  (Right) Snapshot of the neural states illustrating the DECOLLE learning rule in the top layer. In this example, the network is trained to produce three time-varying pseudotargets $\hat{y}_1$, $\hat{y}_2$ and $\hat{y}_3$. Reproduced from \cite{Kaiser_etal18_synaplas}}.
 \end{figure}
 %
 
@@ -637,7 +644,7 @@ $\mathbf{x}=\mathbf{A}\mathbf{s}$ where $A$ is the mixing matrix. Both $\mathbf{
 
 Recently, Isomura and Toyoizumi have proposed an biological plausible learning rule called \textit{Error-Gated Hebbian Rule (EGHR)} inspired from the standard Hebbian rule \cite{isomura2016local} that enables local and efficient learning to find the independent components. The EGHR learning rule can be written as 
 \begin{equation}
-\mathbf{\Delta{W}^{EHGR}}=\eta \langle\left(E_o-E(\mathbf{u})\right)g(\mathbf{u})\mathbf{x}^T\rangle
+\mathbf{\Delta{W}}^{EHGR}=\eta \langle\left(E_o-E(\mathbf{u})\right)g(\mathbf{u})\mathbf{x}^T\rangle
 \end{equation}
 \noindent where $\eta$ is the learning rate, $\langle\cdot\rangle$ is the expectation over the ensemble (training samples), $g(u_i)x_j$ is the Hebbian learning rule, $g(u_i)$, $x_j$ are the postsynaptic and presynaptic terms of the neuron, respectively, $(E_o-E(\mathbf{u}))$ is the global error signal which consists of $E_o$ which is a constant, and $E(\mathbf{u})$ which is the surprise or reward that guides the learning. The cost function of EGHR is defined as $\mathcal{L}=c\frac12\langle(E_0-E(\mathbf{u}))^2\rangle$. It was proven mathematically and numerically that this learning rule is robust, stable and its equilibrium point is proportional to the inverse of the mixture matrix, \emph{i.e.} the solution of ICA. This learning rule is a clear example of three factor learning where the modulating is represented in the surprise,  $\left(E_o-E(\mathbf{u})\right)$. 
 This learning rule is a three factor rule and can be performed using spiking neuron by following an implementation similar to  \cite{savin2010independent}.
@@ -665,7 +672,7 @@ Figure \ref{weights} shows the weights evolution during the training. Clearly, t
 {Results}%
 \label{Results}}
 \vspace{-0.05in}
-\caption{The online training results versus training time (a) Evolution of the weights, and (b) Visual results of the input and the output.}
+\caption{The online training results versus training time (a) Evolution of the weights, and (b) Visual results of the input and the output. Reproduced from \cite{fouda2018independent}}
 \label{FigResults}
 \end{figure}
 
